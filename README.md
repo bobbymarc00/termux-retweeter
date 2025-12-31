@@ -42,8 +42,12 @@ This is a Twitter (X) retweet bot designed to run on Termux. It uses Selenium fo
       OR 
    You can export your own cookies from your own browser.
    - Copy auth_token & ct0 from your already login on X.
-   - Paste to "cookies_raw.txt".
-   - run "convert_cookies.py". to convert your cookies.
+   - Paste to `cookies_raw.txt`.
+   - run `convert_cookies.py`.
+   ```bash
+   python convert_cookies.py
+   ```
+   - Bot ready to use the converted cookies for auto login.
 
 4. **Run the Bot**
    After setting up cookies, you can run the bot again:
@@ -59,12 +63,14 @@ This is a Twitter (X) retweet bot designed to run on Termux. It uses Selenium fo
 
 ## Files
 - `bothome.py`: Bot script for explore the homepage retweeting requirement spesific words({self.keyword}).
-- `botsearchtop.py`: Bot script for searching ({self.keyword}) top tweets.
-- `botsearchlatest.py`: Bot script for searching ({self.keyword}) latest tweets.
+- `botsearchtop.py`: Bot script for searching spesific words ({self.keyword}) top tweets.
+- `botsearchlatest.py`: Bot script for searching spesific words ({self.keyword}) latest tweets.
+- `convert_cookies.py`: Convert `cookies_raw.txt` to `twitter_cookies.pkl`.
 - `requirements.txt`: List of dependencies.
 - `twitter_cookies.pkl`: Saved cookies for automatic login.
 - `retweeted_ids.json`: List of retweeted tweet IDs.
 
 ## Notes
 - Ensure you have a stable internet connection while running the bot.
+
 - The bot is designed for educational purposes. Use it responsibly and in compliance with Twitter's terms of service.
