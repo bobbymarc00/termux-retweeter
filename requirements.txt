@@ -1,0 +1,4 @@
+# Dependencies for the Twitter Retweet Bot
+selenium==4.10.0
+firefox==109.0
+geckodriver==0.34.0
