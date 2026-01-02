@@ -208,42 +208,16 @@ class TwitterRetweetBot:
             return False
     
     def scroll_page(self):
-        """Scroll halaman untuk load tweet baru - smooth scroll seperti manusia menggunakan mouse wheel"""
-        # Scroll smooth seperti mouse wheel untuk trigger lazy loading
-        self.driver.execute_script("""
-            let scrollAmount = 500;
-            let scrollStep = 15;
-            let scrollInterval = setInterval(() => {
-                window.scrollBy(0, scrollStep);
-                scrollAmount -= scrollStep;
-                if (scrollAmount <= 0) clearInterval(scrollInterval);
-            }, 30);
-        """)
-        time.sleep(1.5)  # Tunggu scroll selesai
-
-        # Scroll balik sedikit (trick untuk trigger reload) dengan smooth
-        self.driver.execute_script("""
-            let scrollAmount = 200;
-            let scrollStep = -10;
-            let scrollInterval = setInterval(() => {
-                window.scrollBy(0, scrollStep);
-                scrollAmount += scrollStep;  // Karena scrollStep negatif
-                if (scrollAmount <= 0) clearInterval(scrollInterval);
-            }, 30);
-        """)
-        time.sleep(0.8)
-
-        # Scroll maju lagi
-        self.driver.execute_script("""
-            let scrollAmount = 700;
-            let scrollStep = 15;
-            let scrollInterval = setInterval(() => {
-                window.scrollBy(0, scrollStep);
-                scrollAmount -= scrollStep;
-                if (scrollAmount <= 0) clearInterval(scrollInterval);
-            }, 30);
-        """)
-        time.sleep(2.5)
+        """Scroll halaman untuk load tweet baru - smooth scroll"""
+        # Scroll bertahap untuk trigger lazy loading
+        for i in range(3):
+            self.driver.execute_script("window.scrollBy(0, 500);")
+            time.sleep(1)
+            
+        # Scroll balik sedikit (trick untuk trigger reload)
+            self.driver.execute_script("window.scrollBy(0, -200);")
+            time.sleep(1)
+            self.driver.execute_script("window.scrollBy(0, 700);")
             
     def run(self):
         """Jalankan bot secara terus-menerus"""
