@@ -32,10 +32,14 @@ class TwitterRetweetBot:
     
     def find_available_cookies(self):
         """Cari semua file cookie yang tersedia"""
-        cookie_files = glob.glob('cookies*.pkl')
+        # Cari semua file .pkl (semua file pickle dianggap cookie file untuk fleksibilitas)
+        cookie_files = glob.glob('*.pkl')
+        
+        # Pastikan twitter_cookies.pkl selalu di urutan pertama jika ada
         if 'twitter_cookies.pkl' in cookie_files:
             cookie_files.remove('twitter_cookies.pkl')
-        cookie_files.insert(0, 'twitter_cookies.pkl')
+            cookie_files.insert(0, 'twitter_cookies.pkl')
+        
         return cookie_files
     
     def select_cookie_file(self):

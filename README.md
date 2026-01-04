@@ -77,28 +77,36 @@ This is a Twitter (X) retweet bot designed to run on Termux. It uses Selenium fo
 
 ### Running the Bot with Multi-Cookie Support
 
-The bot now supports multiple cookie files for using different accounts:
+The bot now supports multiple cookie files for using different accounts with **flexible naming**:
 
 ```bash
 python bot.py
 ```
 
 When you run the bot, it will:
-1. Show a list of available cookie files (e.g., `twitter_cookies.pkl`, `cookies1.pkl`, `cookies2.pkl`)
+1. Show a list of ALL available `.pkl` cookie files (e.g., `twitter_cookies.pkl`, `akun_kerja.pkl`, `cookies1.pkl`, etc.)
 2. Let you select which account to use
 3. Continue with the selected mode and keyword
 
-### Creating Multiple Cookie Files
+### Creating Multiple Cookie Files with Flexible Naming
 
-To create additional cookie files:
+To create additional cookie files with custom names:
 
 1. Prepare your cookies in `cookies_raw.txt`
 2. Run the converter:
 ```bash
 python convert_cookies.py
 ```
-3. Select an output filename (e.g., `cookies1.pkl`, `cookies2.pkl`)
-4. Repeat for each account
+3. **Type any custom name** you want (e.g., `akun_kerja`, `personal_account`, `client_x`)
+4. The converter will automatically add `.pkl` extension
+5. Repeat for each account with different names
+
+**Examples of valid cookie names:**
+- `twitter_cookies.pkl` (default)
+- `cookies1.pkl`, `cookies2.pkl` (numbered)
+- `akun_kerja.pkl` (Indonesian naming)
+- `personal_account.pkl` (descriptive)
+- `client-x-project.pkl` (with hyphens)
 
 ### Running the Bot
 

@@ -74,28 +74,32 @@ def convert_cookies():
     print("CONVERT COOKIES")
     print("="*50)
     
-    # Pilih nama file output
-    print("\n📁 PILIH NAMA FILE OUTPUT:")
-    print("1. twitter_cookies.pkl (default)")
-    print("2. cookies1.pkl")
-    print("3. cookies2.pkl")
-    print("4. cookies3.pkl")
-    print("5. cookies4.pkl")
-    print("6. cookies5.pkl")
+    # Pilih nama file output (fleksibel)
+    print("\n📁 MASUKKAN NAMA FILE OUTPUT:")
+    print("Contoh: twitter_cookies.pkl, cookies1.pkl, akun_kerja.pkl, dll")
+    print("File akan disimpan dengan ekstensi .pkl")
     
     while True:
-        try:
-            choice = int(input("\nPilih nama file output (1-6): "))
-            if 1 <= choice <= 6:
-                if choice == 1:
-                    output_file = 'twitter_cookies.pkl'
-                else:
-                    output_file = f'cookies{choice-1}.pkl'
-                break
-            else:
-                print("❌ Pilih antara 1 sampai 6!")
-        except ValueError:
-            print("❌ Masukkan angka 1 sampai 6!")
+        output_file = input("\nMasukkan nama file (tanpa .pkl): ").strip()
+        
+        # Tambahkan ekstensi .pkl jika belum ada
+        if not output_file.endswith('.pkl'):
+            output_file += '.pkl'
+        
+        # Validasi nama file
+        if not output_file:
+            print("❌ Nama file tidak boleh kosong!")
+            continue
+        
+        # Cek karakter invalid
+        import re
+        if not re.match(r'^[a-zA-Z0-9_\-\.]+\.pkl$', output_file):
+            print("❌ Nama file hanya boleh mengandung huruf, angka, underscore (_), dan strip (-)")
+            continue
+        
+        break
+    
+    print(f"✓ Nama file output: {output_file}")
     
     # Baca file
     try:
