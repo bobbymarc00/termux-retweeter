@@ -9,6 +9,7 @@ Mode 3: Search Latest
 import time
 import os
 import pickle
+import glob
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -23,11 +24,43 @@ class TwitterRetweetBot:
         self.cookies_file = cookies_file
         self.driver = None
         self.scroll_count = 0
+        self.available_cookies = []
         
         # Untuk mode home, keyword filter diperlukan
         if mode == 1:
             self.required_keyword = self.keyword
     
+    def find_available_cookies(self):
+        """Cari semua file cookie yang tersedia"""
+        cookie_files = glob.glob('cookies*.pkl')
+        if 'twitter_cookies.pkl' in cookie_files:
+            cookie_files.remove('twitter_cookies.pkl')
+        cookie_files.insert(0, 'twitter_cookies.pkl')
+        return cookie_files
+    
+    def select_cookie_file(self):
+        """Pilih file cookie dari daftar yang tersedia"""
+        self.available_cookies = self.find_available_cookies()
+        
+        if not self.available_cookies:
+            print("❌ Tidak ada file cookie yang ditemukan!")
+            return None
+        
+        print("\n📁 PILIH COOKIE FILE:")
+        for i, cookie_file in enumerate(self.available_cookies):
+            print(f"{i+1}. {cookie_file}")
+        
+        while True:
+            try:
+                choice = int(input(f"\nPilih cookie (1-{len(self.available_cookies)}): "))
+                if 1 <= choice <= len(self.available_cookies):
+                    selected_cookie = self.available_cookies[choice-1]
+                    print(f"✓ Cookie dipilih: {selected_cookie}")
+                    return selected_cookie
+                else:
+                    print(f"❌ Pilih antara 1 sampai {len(self.available_cookies)}!")
+            except ValueError:
+                print(f"❌ Masukkan angka 1 sampai {len(self.available_cookies)}!")
     def setup_driver(self):
         """Setup Firefox driver untuk Termux"""
         print("Setting up Firefox driver...")
@@ -367,21 +400,28 @@ if __name__ == "__main__":
     print("BOT RETWEET X (TWITTER) - 3-IN-1")
     print("="*50)
     
-    # Cek apakah cookies sudah ada
-    if not os.path.exists('twitter_cookies.pkl'):
+    # Cek apakah ada cookies yang tersedia
+    bot = TwitterRetweetBot("", 1)
+    available_cookies = bot.find_available_cookies()
+    
+    if not available_cookies:
         print("\n⚠️  COOKIES BELUM ADA!")
         print("Bot akan setup cookies terlebih dahulu...\n")
-        
+         
         username = input("Username/Email X: ")
         password = input("Password X: ")
-        
+         
         # Dummy bot untuk setup cookies
-        bot = TwitterRetweetBot("", 1)
         bot.setup_driver()
         if bot.manual_login_for_cookies(username, password):
             print("\n✓ Setup selesai! Silakan jalankan bot lagi.\n")
         else:
             print("\n✗ Setup gagal. Silakan coba lagi.\n")
+        exit()
+    
+    # Pilih cookie file
+    selected_cookie = bot.select_cookie_file()
+    if not selected_cookie:
         exit()
     
     # Menu pilihan mode
@@ -405,8 +445,8 @@ if __name__ == "__main__":
         KEYWORD = input("Keyword untuk filter di Home Timeline: ")
     else:
         KEYWORD = input("Keyword pencarian: ")
-    
+     
     print("\n" + "="*50)
     
-    bot = TwitterRetweetBot(KEYWORD, mode)
+    bot = TwitterRetweetBot(KEYWORD, mode, selected_cookie)
     bot.run()

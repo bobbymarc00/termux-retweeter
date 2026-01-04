@@ -4,6 +4,7 @@ This is a Twitter (X) retweet bot designed to run on Termux. It uses Selenium fo
 
 ## ✨ Features
 - **3 Modes in 1 Script**: Home Timeline, Search Top, or Search Latest
+- **Multi-Cookie Support**: Use multiple accounts with different cookie files
 - Retweet tweets based on keyword search or filter
 - Save and reuse cookies for automatic login
 - Real-time scroll counter and tweet ID notifications
@@ -74,10 +75,32 @@ This is a Twitter (X) retweet bot designed to run on Termux. It uses Selenium fo
 
 ## 🚀 Usage
 
-### Running the Bot
+### Running the Bot with Multi-Cookie Support
+
+The bot now supports multiple cookie files for using different accounts:
+
 ```bash
 python bot.py
 ```
+
+When you run the bot, it will:
+1. Show a list of available cookie files (e.g., `twitter_cookies.pkl`, `cookies1.pkl`, `cookies2.pkl`)
+2. Let you select which account to use
+3. Continue with the selected mode and keyword
+
+### Creating Multiple Cookie Files
+
+To create additional cookie files:
+
+1. Prepare your cookies in `cookies_raw.txt`
+2. Run the converter:
+```bash
+python convert_cookies.py
+```
+3. Select an output filename (e.g., `cookies1.pkl`, `cookies2.pkl`)
+4. Repeat for each account
+
+### Running the Bot
 
 **Interactive Menu:**
 ```
@@ -106,10 +129,11 @@ Keyword pencarian: bitcoin
 ## 📁 Files
 
 ### Main Files
-- **`bot.py`**: 🆕 Unified bot script with 3 modes (RECOMMENDED)
-- `convert_cookies.py`: Convert `cookies_raw.txt` to `twitter_cookies.pkl`
+- **`bot.py`**: 🆕 Unified bot script with 3 modes and multi-cookie support (RECOMMENDED)
+- `convert_cookies.py`: Convert `cookies_raw.txt` to multiple cookie files
 - `requirements.txt`: List of dependencies
-- `twitter_cookies.pkl`: Saved cookies for automatic login
+- `twitter_cookies.pkl`: Default saved cookies for automatic login
+- `cookies1.pkl`, `cookies2.pkl`, etc.: Additional cookie files for multiple accounts
 
 ### Legacy Files (Optional)
 - `bothome.py`: Standalone bot for home timeline mode

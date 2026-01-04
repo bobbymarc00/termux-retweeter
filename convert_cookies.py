@@ -74,6 +74,29 @@ def convert_cookies():
     print("CONVERT COOKIES")
     print("="*50)
     
+    # Pilih nama file output
+    print("\n📁 PILIH NAMA FILE OUTPUT:")
+    print("1. twitter_cookies.pkl (default)")
+    print("2. cookies1.pkl")
+    print("3. cookies2.pkl")
+    print("4. cookies3.pkl")
+    print("5. cookies4.pkl")
+    print("6. cookies5.pkl")
+    
+    while True:
+        try:
+            choice = int(input("\nPilih nama file output (1-6): "))
+            if 1 <= choice <= 6:
+                if choice == 1:
+                    output_file = 'twitter_cookies.pkl'
+                else:
+                    output_file = f'cookies{choice-1}.pkl'
+                break
+            else:
+                print("❌ Pilih antara 1 sampai 6!")
+        except ValueError:
+            print("❌ Masukkan angka 1 sampai 6!")
+    
     # Baca file
     try:
         with open('cookies_raw.txt', 'r', encoding='utf-8') as f:
@@ -115,7 +138,7 @@ def convert_cookies():
         cookies = important_cookies
     
     # Simpan
-    with open('twitter_cookies.pkl', 'wb') as f:
+    with open(output_file, 'wb') as f:
         pickle.dump(cookies, f)
     
     print(f"\n✅ Berhasil convert {len(cookies)} cookies!")
@@ -124,9 +147,9 @@ def convert_cookies():
         value_preview = c.get('value', '')[:20]
         print(f"   ✓ {c.get('name')}: {value_preview}...")
     
-    print(f"\n📁 Saved to: twitter_cookies.pkl")
+    print(f"\n📁 Saved to: {output_file}")
     print("\n🚀 Sekarang jalankan bot:")
-    print("   python bot_retweet.py\n")
+    print("   python bot.py\n")
 
 if __name__ == "__main__":
     convert_cookies()
