@@ -5,6 +5,8 @@ This is a Twitter (X) retweet bot designed to run on Termux. It uses Selenium fo
 ## ✨ Features
 - **3 Modes in 1 Script**: Home Timeline, Search Top, or Search Latest
 - **Multi-Cookie Support**: Use multiple accounts with different cookie files
+- **🆕 Auto-Refresh**: Automatically refresh when no tweets found (Mode 1)
+- **🆕 Logout Detection**: Detects when X logs you out or flags account
 - Retweet tweets based on keyword search or filter
 - Save and reuse cookies for automatic login
 - Real-time scroll counter and tweet ID notifications
@@ -19,6 +21,28 @@ This is a Twitter (X) retweet bot designed to run on Termux. It uses Selenium fo
 | **Mode 1** | Home Timeline with keyword filter | Retweet from your timeline containing specific words |
 | **Mode 2** | Search Top | Retweet most popular/engaging tweets with keyword |
 | **Mode 3** | Search Latest | Retweet newest tweets with keyword (real-time) |
+
+## 🆕 New Features in v2.0
+
+### Auto-Refresh (Mode 1)
+- Automatically refreshes the page after **5 consecutive scrolls** without finding matching tweets
+- Prevents infinite scrolling when timeline has no new content
+- Progress indicator: `📊 Scroll tanpa tweet cocok: 3/5`
+- Counter resets when a matching tweet is found
+
+### Logout Detection 🛡️
+The bot now detects various logout scenarios:
+- ✅ Session expiration
+- ✅ X/Twitter spam detection
+- ✅ Account verification challenges
+- ✅ Suspicious activity warnings
+- ✅ Forced re-authentication
+
+When logout is detected:
+- Bot automatically stops
+- Saves screenshot for debugging
+- Shows informative error message with solutions
+- Suggests next steps to recover
 
 ## 📋 Installation
 
@@ -112,36 +136,62 @@ python convert_cookies.py
 
 **Interactive Menu:**
 ```
-🎯 PILIH MODE:
-1. Home Timeline (dengan filter keyword)
-2. Search Top (hasil teratas)
-3. Search Latest (terbaru)
+🎯 SELECT MODE:
+1. Home Timeline (with keyword filter)
+2. Search Top (top results)
+3. Search Latest (latest tweets)
 
-Pilih mode (1/2/3): 2
-Keyword pencarian: bitcoin
+Select mode (1/2/3): 1
+Keyword to filter in Home Timeline: giveaway
 ```
 
 ### What You'll See
+
+**Normal Operation:**
 ```
-✓ Berhasil retweet: 1234567890123456789
-⊘ Skip (sudah di-retweet): 9876543210987654321
-🔄 Scroll ke-1
-🔄 Scroll ke-2
+✓ Successfully retweeted: 1234567890123456789
+⊘ Skip (already retweeted): 9876543210987654321
+🔄 Scroll #1
+📊 Scrolls without matching tweets: 2/5
+```
+
+**Auto-Refresh (Mode 1):**
+```
+📊 Scrolls without matching tweets: 5/5
+🔄 REFRESH PAGE - Resetting tweet search...
+✓ Page refreshed, starting new search
+```
+
+**Logout Detection:**
+```
+⚠️  LOGOUT DETECTED!
+Possible causes:
+1. X detected suspicious/spam activity
+2. Session cookies expired
+3. Account logged out from another device
+
+Solutions:
+1. Try logging in again from normal browser
+2. Wait a few hours before trying again
+3. Use another account or create new cookies
+📸 Screenshot saved: logout_screenshot_1735123456.png
 ```
 
 ### Controls
 - The bot will continuously search/monitor for tweets
 - It will skip tweets that have already been retweeted in the current session
+- **Mode 1 only**: Auto-refreshes after 5 scrolls without matching tweets
 - Press `Ctrl+C` to stop the bot safely
 
 ## 📁 Files
 
 ### Main Files
-- **`bot.py`**: 🆕 Unified bot script with 3 modes and multi-cookie support (RECOMMENDED)
+- **`bot.py`**: 🆕 Unified bot script v2.0 with auto-refresh & logout detection (RECOMMENDED)
 - `convert_cookies.py`: Convert `cookies_raw.txt` to multiple cookie files
 - `requirements.txt`: List of dependencies
 - `twitter_cookies.pkl`: Default saved cookies for automatic login
 - `cookies1.pkl`, `cookies2.pkl`, etc.: Additional cookie files for multiple accounts
+- `logout_screenshot_*.png`: Debug screenshots when logout is detected
 
 ### Legacy Files (Optional)
 - `bothome.py`: Standalone bot for home timeline mode
@@ -163,6 +213,25 @@ Keyword pencarian: bitcoin
 - Mobile user agent spoofing
 - Headless Firefox browser operation
 - JavaScript click fallback for blocked elements
+- 🆕 Smart logout detection to avoid wasted sessions
+
+### Auto-Refresh Logic (Mode 1)
+```
+No matching tweets found → Scroll (1/5)
+Still no matches → Scroll (2/5)
+...
+Still no matches → Scroll (5/5)
+→ Auto-refresh page and reset counter
+→ Continue searching from fresh timeline
+```
+
+### Logout Detection Algorithm
+The bot checks for multiple indicators:
+1. **URL Redirects**: `/i/flow/login`, `/login`, `/account/access`
+2. **Login Forms**: Presence of username and password input fields
+3. **Challenge Screens**: "Verify your identity", "automated behavior"
+4. **Navigation Loss**: Missing sidebar navigation elements
+5. **Session Checks**: Performed every iteration to catch early
 
 ### Privacy & Tracking
 - **No permanent tracking**: Bot doesn't save `retweeted_ids.json`
@@ -173,7 +242,8 @@ Keyword pencarian: bitcoin
 
 ### Mode 1: Home Timeline
 - Monitors your home feed
-- Filters tweets containing your specified keyword
+- Filters tweets containing your specified keyword (case-insensitive)
+- **Auto-refresh feature enabled** (5 scroll limit)
 - Best for: Engaging with your network's content
 
 ### Mode 2: Search Top
@@ -193,6 +263,8 @@ Keyword pencarian: bitcoin
 - **Use responsibly and in compliance with X's (Twitter) terms of service**
 - Automated actions may result in account restrictions or bans
 - Consider rate limits and avoid excessive retweeting
+- 🆕 Monitor logout screenshots if account gets flagged
+- 🆕 Use multiple cookies to rotate accounts if one gets restricted
 
 ## ⚠️ Disclaimer
 
@@ -212,6 +284,55 @@ This bot is for educational and research purposes only. Automated interactions w
 - Check your internet connection
 - Verify the keyword is correct
 - Try a different mode (some keywords work better in search modes)
+- **Mode 1**: Wait for auto-refresh after 5 scrolls
+
+### Bot says "LOGOUT DETECTED"
+**This is a real logout/restriction from X. Solutions:**
+
+1. **Check the screenshot**: Look at `logout_screenshot_*.png` to see what X is showing
+2. **If spam detection**:
+   - Wait 6-24 hours before trying again
+   - Reduce retweet frequency (add longer delays in code)
+   - Use different account temporarily
+3. **If session expired**:
+   - Delete old cookie file
+   - Run `python bot.py` to create new cookies
+4. **If account locked**:
+   - Log in via browser to complete verification
+   - Export new cookies after verification
+5. **Prevention tips**:
+   - Don't run bot 24/7
+   - Use realistic delays (3-10 seconds between retweets)
+   - Avoid retweeting too many posts per hour
+   - Mix manual activity with bot activity
+
+### Bot keeps refreshing (Mode 1)
+- This is normal if your timeline has no tweets matching the keyword
+- Check if your keyword is too specific
+- Try using partial words or more common terms
+- Ensure you're following accounts that post about your keyword
+
+### False logout detection
+- Very rare with v2.0 improvements
+- Check your internet connection
+- Manually verify you're still logged in via browser
+- Report issue if it persists
+
+## 🔄 Changelog
+
+### v2.0 (Latest)
+- ✨ Added auto-refresh feature for Mode 1 (5 scroll limit)
+- 🛡️ Improved logout detection algorithm
+- 📸 Automatic screenshot on logout for debugging
+- 🔧 More accurate session validation
+- 📊 Real-time counter display for refresh trigger
+- 🐛 Fixed false positive logout detections
+- ⚡ Better error handling and recovery
+
+### v1.0
+- Initial release with 3 modes
+- Multi-cookie support
+- Basic authentication system
 
 ## 📜 License
 
